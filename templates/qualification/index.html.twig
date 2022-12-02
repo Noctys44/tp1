@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Qualifications{% endblock %}
+
+{% block body %}
+
+<table>
+    <thead>
+        <th>#</th>
+        <th>Code</th>
+        <th>Qualification</th>
+    </thead>
+    <tbody>
+        {% for qualification in qualifications %}
+            <tr>
+                <td>{{qualification.id}}</td>
+                <td>{{qualification.code}}</td>
+                <td>{{qualification.libelle}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
