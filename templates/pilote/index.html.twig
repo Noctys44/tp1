@@ -1,20 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PiloteController!{% endblock %}
+{% block title %}Liste des pilotes{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Pilotes</h1>
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Qualification</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for pilote in pilotes %}
+            <tr class="vertical-align">
+                <td>{{ pilote.id }}</td>
+                <td>{{ pilote.nom }}</td>
+                <td>{{ pilote.prenom }}</td>
+                <td>{{ pilote.email }}</td>
+                <td>{{ pilote.qualification.libelle }}</td>
+                <td>
+                    <a href="{{ path('pilote_show', {'id': pilote.id}) }}" class="btn btn-primary">show</a>
+                    <a href="{{ path('pilote_edit', {'id': pilote.id}) }}" class="btn btn-warning">edit</a>
+                    <a href="{{ path('pilote_delete', {'id': pilote.id}) }}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan=\"3\">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/Utilisateur/SymfonyTP/tp1/src/Controller/PiloteController.php'|file_link(0) }}">src/Controller/PiloteController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/Utilisateur/SymfonyTP/tp1/templates/pilote/index.html.twig'|file_link(0) }}">templates/pilote/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <a href="{{ path('pilote_add') }}" class="btn btn-primary mt-3">Ajouter un pilote</a>
 {% endblock %}

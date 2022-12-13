@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Qualification;
 use App\Repository\QualificationRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class QualificationController extends AbstractController
 {
@@ -18,35 +20,57 @@ class QualificationController extends AbstractController
         ]);
     }
 
-    #[Route('/qualification/add', name: 'add_qualification')]
-    public function add(): Response
+    #[Route('/qualification/{id}', name: 'qualification_show', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function show(Qualification $qualification): Response
     {
-        return $this->render('qualification/index.html.twig', [
-            'controller_name' => 'QualificationController',
+        return $this->render('qualification/show.html.twig', [
+            'qualification' => $qualification,
         ]);
     }
 
-    #[Route('/qualification/{id}}', name: 'show_qualification')]
-    public function show(): Response
+    #[Route('/qualification/add', name: 'qualification_add', methods: ['GET', 'POST'])]
+    public function add(Request $request, QualificationRepository $qualificationRepository): Response
     {
-        return $this->render('qualification/index.html.twig', [
-            'controller_name' => 'QualificationController',
+        $qualification = new Qualification();
+        $form = $this->createForm(QualificationType::class, $qualification);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $qualificationRepository->save($qualification, true);
+
+            return $this->redirectToRoute('app_qualification');
+        }
+
+        return $this->render('qualification/add.html.twig', [
+            'form' => $form->createView(),
+            'titre' => 'Ajouter une qualification',
         ]);
     }
 
-    #[Route('/qualification/edit/{id}', name: 'edit_qualification')]
-    public function edit(): Response
+    #[Route('/qualification/edit/{id}', name: 'qualification_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Qualification $qualification, QualificationRepository $qualificationRepository): Response
     {
-        return $this->render('qualification/index.html.twig', [
-            'controller_name' => 'QualificationController',
+        $form = $this->createForm(QualificationType::class, $qualification);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $qualificationRepository->save($qualification, true);
+
+            return $this->redirectToRoute('app_qualification');
+        }
+
+        return $this->render('qualification/add.html.twig', [
+            'form' => $form->createView(),
+            'titre' => 'Modifier une qualification',
         ]);
     }
 
-    #[Route('/qualification/delete/{i}', name: 'delete_qualification')]
-    public function delete(): Response
+    #[Route('/qualification/delete/{id}', name: 'qualification_delete', methods: ['GET'])]
+    public function delete(Qualification $qualification, QualificationRepository $qualificationRepository): Response
     {
-        return $this->render('qualification/index.html.twig', [
-            'controller_name' => 'QualificationController',
-        ]);
+        $qualificationRepository->remove($qualification, true);
+        return $this->redirectToRoute('app_qualification');
     }
 }
